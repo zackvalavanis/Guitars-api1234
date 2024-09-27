@@ -1,20 +1,30 @@
 class GuitarsController < ApplicationController
+  before_action :authorize_user, only: [:create, :update, :destroy]
 
   def index 
-    @guitars = Guitar.all
-    render :index
+    
+    if current_user.id
+      @guitars = Guitar.where(user_id: current_user.id)
+      render :index
+    else 
+      render json: { error: 'Unauthorized Access' }, status: :unauthorized 
+    end
   end 
 
   def show 
-    @guitar = Guitar.find_by(id: params[:id])
+    @guitar = Guitar.find_by(id: params[:id], user_id: current_user.id)
+    if @guitar 
     render :show
+    else 
+      render json: { error: 'Unauthorized User'}, status: :unauthorized
+    end
   end 
 
   def create 
     @guitar = Guitar.new(
       name: params[:name], 
       price: params[:price],
-      user_id: params[:user_id] #add current user to this 
+      user_id: current_user.id #add current user to this 
     )
     @guitar.save
     render :show
