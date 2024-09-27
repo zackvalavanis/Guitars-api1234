@@ -31,7 +31,7 @@ class GuitarsController < ApplicationController
   end 
 
   def update 
-    @guitar = Guitar.find_by(id: params[:id])
+    @guitar = Guitar.find_by(id: params[:id], user_id: current_user.id)
     @guitar.update(
       name: params[:name] || @guitar.name, 
       price: params[:price] || @guitar.price,
@@ -41,7 +41,7 @@ class GuitarsController < ApplicationController
   end
 
   def destroy 
-    @guitar = Guitar.find_by(id: params[:id])
+    @guitar = Guitar.find_by(id: params[:id], user_id: current_user.id)
     @guitar.destroy
     render json: {message: 'The guitar has been removed!'}
   end 
