@@ -17,7 +17,19 @@ Rails.application.routes.draw do
   patch "/images/:id" => "images#update"
   delete "/images/:id" => "images#destroy"
 
+  get "/users" => "users#index"
+  get "/users/:id" => "users#show"
+  post "/users" => "users#create"
+  patch "/users/:id" => "users#update"
+  delete "/users/:id" => "users#destroy"
 
+  get "/sessions" => "sessions#index"
+  get "/sessions/:id" => "sessions#show"
+  post "/sessions" => "sessions#create"
+  patch "/sessions/:id" => "sessions#update"
+  delete "/sessions/:id" => "sessions#destroy"
+
+  
   # Defines the root path route ("/")
   # root "posts#index"
 end
