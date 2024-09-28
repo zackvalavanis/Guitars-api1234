@@ -24,12 +24,32 @@ class GuitarsController < ApplicationController
     @guitar = Guitar.new(
       name: params[:name], 
       price: params[:price],
-      user_id: current_user.id #add current user to this 
+      user_id: current_user.id  # Add current user to this 
     )
-    @guitar.save
-    render :show
-  end 
-
+  
+    if @guitar.save
+      if params[:'Url[]'].present?
+        Rails.logger.debug "Building images with URLs: #{params[:'Url[]']}"
+        params[:'Url[]'].each do |url|
+          if url.present?
+            @guitar.images.build(url: url)
+            Rails.logger.debug "Image built with URL: #{url}"
+          end
+        end 
+      end
+  
+      # Save the guitar again to persist the images
+      if @guitar.save
+        render :show, status: :created  # Render the show template with a created status
+      else
+        render json: @guitar.errors, status: :unprocessable_entity  # Handle validation errors
+      end 
+    else
+      render json: @guitar.errors, status: :unprocessable_entity  # Handle validation errors
+    end 
+  end
+  
+  
   def update 
     @guitar = Guitar.find_by(id: params[:id], user_id: current_user.id)
     @guitar.update(

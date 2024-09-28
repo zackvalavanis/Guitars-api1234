@@ -15,4 +15,13 @@ class SessionsController < ApplicationController
       render json: {}, status: :unauthorized
     end
   end
+
+  def index
+    if current_user.id
+      @sessions = Session.where(user_id: current_user.id)
+      render :index
+    else 
+      render json: { error: 'Unauthorized Access' }, status: :unauthorized 
+    end
+  end
 end
