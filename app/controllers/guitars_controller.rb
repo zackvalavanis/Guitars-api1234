@@ -1,5 +1,5 @@
 class GuitarsController < ApplicationController
-  before_action :authorize_user, only: [:create, :update, :destroy]
+  before_action :authorize_user
 
   def index 
     
@@ -45,4 +45,10 @@ class GuitarsController < ApplicationController
     @guitar.destroy
     render json: {message: 'The guitar has been removed!'}
   end 
+
+  def authorize_user 
+    unless current_user
+      render json: { error: 'Unauthorized user'}, status: :unauthorized
+    end
+  end
 end
